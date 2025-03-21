@@ -38,15 +38,29 @@ for i in range(len(x_values)):
     for j in range(len(s_values)):
         sim_result[i, j, :] = FSCR(x_values[i], s_values[j])
 
-figure, axis = plt.subplots(1, 2)
+# figure, axis = plt.subplots(1, 2)
 # plt.imshow(sim_result[:,:,3])
 # plt.show()
-axis[0].imshow(sim_result[:, :, 3])
-axis[0].set_title("productivity")
+# axis[0].imshow(sim_result[:, :, 3])
+# axis[0].set_title("productivity")
 
-axis[1].imshow(sim_result[:, :, 2])
-axis[1].set_title("substrate utility")
+# axis[1].imshow(sim_result[:, :, 2])
+# axis[1].set_title("substrate utility")
 
+# plt.show()
+
+plt.imshow(sim_result[:, :, 3])
+plt.colorbar()
+plt.xlabel("S")
+plt.ylabel("X")
+plt.savefig("plots/FSCR_optimum/productivity.png")
+plt.show()
+
+plt.imshow(sim_result[:, :, 3] * sim_result[:, :, 2])
+plt.colorbar()
+plt.xlabel("S")
+plt.ylabel("X")
+plt.savefig("plots/FSCR_optimum/productivity_utility.png")
 plt.show()
 
 opt_productivity = np.max(sim_result[:, :, 3])
@@ -57,6 +71,18 @@ print(f"Optimal productivity: {opt_productivity}")
 print(f"Optimal X: {opt_productivity_X}")
 print(f"Optimal S: {opt_productivity_S}")
 
+plt.plot(s_values, sim_result[opt_productivity_index[0][0], :, 3])
+plt.xlabel("S")
+plt.ylabel("productivity")
+plt.savefig("plots/FSCR_optimum/productivity_S.png")
+plt.show()
+
+plt.plot(x_values, sim_result[:, opt_productivity_index[1][0], 3])
+plt.xlabel("X")
+plt.ylabel("productivity")
+plt.savefig("plots/FSCR_optimum/productivity_X.png")
+plt.show()
+
 opt_productivity = np.max(sim_result[:, :, 2]*sim_result[:, :, 3])
 opt_productivity_index = np.where(sim_result[:, :, 2]*sim_result[:, :, 3] == opt_productivity)
 opt_productivity_X = x_values[opt_productivity_index[0][0]]
@@ -65,3 +91,15 @@ print(f"Optimal productivity: {sim_result[opt_productivity_index[0][0], opt_prod
 print(f"Optimal substrate utility: {sim_result[opt_productivity_index[0][0], opt_productivity_index[1][0], 2]}")
 print(f"Optimal X: {opt_productivity_X}")
 print(f"Optimal S: {opt_productivity_S}")
+
+plt.plot(s_values, sim_result[opt_productivity_index[0][0], :, 2]*sim_result[opt_productivity_index[0][0], :, 3])
+plt.xlabel("S")
+plt.ylabel("productivity*substrate utility")
+plt.savefig("plots/FSCR_optimum/productivity_utility_S.png")
+plt.show()
+
+plt.plot(x_values, sim_result[:, opt_productivity_index[1][0], 2]*sim_result[:, opt_productivity_index[1][0], 3])
+plt.xlabel("X")
+plt.ylabel("productivity*substrate utility")
+plt.savefig("plots/FSCR_optimum/productivity_utility_X.png")
+plt.show()

@@ -165,14 +165,14 @@ def plug_flow_vectorized(step, end_time, X0, S0, method="euler"):
     return results
 
 
-sim_result = np.zeros((100, 100, 200, 6))
+sim_result = np.zeros((30, 30, 60, 6))
 
-x_values = np.linspace(start=1, stop=X_max, num=100)
-s_values = np.linspace(start=0.1, stop=20, num=100)
-time_values = np.linspace(start=0.1, stop=100, num=200)
+x_values = np.linspace(start=0.3, stop=X_max, num=30)
+s_values = np.linspace(start=0.1, stop=10, num=30)
+time_values = np.linspace(start=0.1, stop=20, num=60)
 
 sim_result = plug_flow_vectorized(
-    step=0.01, end_time=time_values, X0=x_values, S0=s_values, method="rk4"
+    step=0.02, end_time=time_values, X0=x_values, S0=s_values, method="rk4"
 )
 
 # old method (only productivity)
@@ -198,10 +198,30 @@ print(
 )
 
 
+
+plt.plot(x_values, sim_result[:, opt_productivity_index[1][0], opt_productivity_index[2][0], 4])
+plt.xlabel("X")
+plt.ylabel("Productivity")
+plt.savefig("plots/optimum/naive_productivity_X.png")
+plt.show()
+
+plt.plot(s_values, sim_result[opt_productivity_index[0][0], :, opt_productivity_index[2][0], 4])
+plt.xlabel("S")
+plt.ylabel("Productivity")
+plt.savefig("plots/optimum/naive_productivity_S.png")
+plt.show()
+
+plt.plot(time_values, sim_result[opt_productivity_index[0][0], opt_productivity_index[1][0], :, 4])
+plt.xlabel("T")
+plt.ylabel("Productivity")
+plt.savefig("plots/optimum/naive_productivity_T.png")
+plt.show()
+
+
 # figure, axis = plt.subplots(1, 3)
-# # plt.imshow(sim_result[:,:,3])
-# # plt.show()
-# # axis[0].imshow(np.average(sim_result[:, :, :, 4], axis=2))
+# plt.imshow(sim_result[:,:,3])
+# plt.show()
+# axis[0].imshow(np.average(sim_result[:, :, :, 4], axis=2))
 # axis[0].imshow(sim_result[:, :, opt_productivity_index[2][0], 4])
 # axis[0].set_title("productivity (x,s)")
 
@@ -212,8 +232,26 @@ print(
 # # axis[2].imshow(np.average(sim_result[:, :, :, 4], axis=0))
 # axis[2].imshow(sim_result[opt_productivity_index[0][0], :, :, 4])
 # axis[2].set_title("productivity (s,t)")
-
+# plt.savefig("plots/optimum/naive_productivity.png")
 # plt.show()
+
+plt.imshow(sim_result[:,:,opt_productivity_index[2][0], 4])
+plt.xlabel("S")
+plt.ylabel("X")
+plt.savefig("plots/optimum/naive_productivity_XS.png")
+plt.show()
+
+plt.imshow(sim_result[:, opt_productivity_index[1][0],:, 4])
+plt.xlabel("T")
+plt.ylabel("X")
+plt.savefig("plots/optimum/naive_productivity_XT.png")
+plt.show()
+
+plt.imshow(sim_result[opt_productivity_index[0][0], :, :, 4])
+plt.xlabel("T")
+plt.ylabel("S")
+plt.savefig("plots/optimum/naive_productivity_ST.png")
+plt.show()
 
 # productivity + substrate utilization
 
@@ -244,48 +282,111 @@ print(
     ]
 )
 
-figure, axis = plt.subplots(3, 3)
-# plt.imshow(sim_result[:,:,3])
-# plt.show()
-# axis[0].imshow(np.average(sim_result[:, :, :, 4], axis=2))
-axis[0, 0].imshow(sim_result[:, :, opt_productivity_index[2][0], 4])
-axis[0, 0].set_title("productivity (x,s)")
+# figure, axis = plt.subplots(2, 3)
+# # plt.imshow(sim_result[:,:,3])
+# # plt.show()
+# # axis[0].imshow(np.average(sim_result[:, :, :, 4], axis=2))
+# axis[0, 0].imshow(sim_result[:, :, opt_productivity_index[2][0], 4])
+# axis[0, 0].set_title("productivity (x,s)")
 
-# axis[1].imshow(np.average(sim_result[:, :, :, 4], axis=1))
-axis[0, 1].imshow(sim_result[:, opt_productivity_index[1][0], :, 4])
-axis[0, 1].set_title("productivity (x,t)")
+# # axis[1].imshow(np.average(sim_result[:, :, :, 4], axis=1))
+# axis[0, 1].imshow(sim_result[:, opt_productivity_index[1][0], :, 4])
+# axis[0, 1].set_title("productivity (x,t)")
 
-# axis[2].imshow(np.average(sim_result[:, :, :, 4], axis=0))
-axis[0, 2].imshow(sim_result[opt_productivity_index[0][0], :, :, 4])
-axis[0, 2].set_title("productivity (s,t)")
+# # axis[2].imshow(np.average(sim_result[:, :, :, 4], axis=0))
+# axis[0, 2].imshow(sim_result[opt_productivity_index[0][0], :, :, 4])
+# axis[0, 2].set_title("productivity (s,t)")
 
 
-axis[1, 0].imshow(sim_result[:, :, opt_productivity_index[2][0], 3])
-axis[1, 0].set_title("substrate utilization (x,s)")
+# axis[1, 0].imshow(sim_result[:, :, opt_productivity_index[2][0], 3])
+# axis[1, 0].set_title("substrate utilization (x,s)")
 
-axis[1, 1].imshow(sim_result[:, opt_productivity_index[1][0], :, 3])
-axis[1, 1].set_title("substrate utilization (x,t)")
+# axis[1, 1].imshow(sim_result[:, opt_productivity_index[1][0], :, 3])
+# axis[1, 1].set_title("substrate utilization (x,t)")
 
-axis[1, 2].imshow(sim_result[opt_productivity_index[0][0], :, :, 3])
-axis[1, 2].set_title("substrate utilization (s,t)")
+# axis[1, 2].imshow(sim_result[opt_productivity_index[0][0], :, :, 3])
+# axis[1, 2].set_title("substrate utilization (s,t)")
 
 # Productivity * substrate utilization
-axis[2, 0].imshow(
+# axis[1, 0].imshow(
+#     sim_result[:, :, opt_productivity_index[2][0], 4]
+#     * sim_result[:, :, opt_productivity_index[2][0], 3]
+# )
+# axis[1, 0].set_title("productivity * substrate utilization (x,s)")
+
+# axis[1, 1].imshow(
+#     sim_result[:, opt_productivity_index[1][0], :, 4]
+#     * sim_result[:, opt_productivity_index[1][0], :, 3]
+# )
+# axis[1, 1].set_title("productivity * substrate utilization (x,t)")
+
+# axis[1, 2].imshow(
+#     sim_result[opt_productivity_index[0][0], :, :, 4]
+#     * sim_result[opt_productivity_index[0][0], :, :, 3]
+# )
+# axis[1, 2].set_title("productivity * substrate utilization (s,t)")
+
+# plt.show()
+
+plt.imshow(
     sim_result[:, :, opt_productivity_index[2][0], 4]
     * sim_result[:, :, opt_productivity_index[2][0], 3]
 )
-axis[2, 0].set_title("productivity * substrate utilization (x,s)")
+# plt.set_title("productivity * substrate utilization (x,s)")
+plt.xlabel("S")
+plt.ylabel("X")
+plt.savefig("plots/optimum/productivity_utility_XS.png")
+plt.show()
 
-axis[2, 1].imshow(
+plt.imshow(
     sim_result[:, opt_productivity_index[1][0], :, 4]
     * sim_result[:, opt_productivity_index[1][0], :, 3]
 )
-axis[2, 1].set_title("productivity * substrate utilization (x,t)")
+# plt.set_title("productivity * substrate utilization (x,t)")
+plt.xlabel("T")
+plt.ylabel("X")
+plt.savefig("plots/optimum/productivity_utility_XT.png")
+plt.show()
 
-axis[2, 2].imshow(
+plt.imshow(
     sim_result[opt_productivity_index[0][0], :, :, 4]
     * sim_result[opt_productivity_index[0][0], :, :, 3]
 )
-axis[2, 2].set_title("productivity * substrate utilization (s,t)")
+# plt.set_title("productivity * substrate utilization (s,t)")
+plt.xlabel("T")
+plt.ylabel("S")
+plt.savefig("plots/optimum/productivity_utility_ST.png")
+plt.show()
 
+
+
+figure, axis = plt.subplots(1, 3)
+
+axis[0].plot(x_values, sim_result[:, opt_productivity_index[1][0], opt_productivity_index[2][0], 3] * sim_result[:, opt_productivity_index[1][0], opt_productivity_index[2][0], 4])
+axis[0].set_title("productivity * substrate utilization (x)")
+
+axis[1].plot(s_values, sim_result[opt_productivity_index[0][0], :, opt_productivity_index[2][0], 3] * sim_result[opt_productivity_index[0][0], :, opt_productivity_index[2][0], 4])
+axis[1].set_title("productivity * substrate utilization (s)")
+
+axis[2].plot(time_values, sim_result[opt_productivity_index[0][0], opt_productivity_index[1][0], :, 3] * sim_result[opt_productivity_index[0][0], opt_productivity_index[1][0], :, 4])
+axis[2].set_title("productivity * substrate utilization (t)")
+
+plt.show()
+
+plt.plot(x_values, sim_result[:, opt_productivity_index[1][0], opt_productivity_index[2][0], 3] * sim_result[:, opt_productivity_index[1][0], opt_productivity_index[2][0], 4])
+plt.xlabel("X")
+plt.ylabel("Productivity * Substrate Utilization")
+plt.savefig("plots/optimum/productivity_utility_X.png")
+plt.show()
+
+plt.plot(s_values, sim_result[opt_productivity_index[0][0], :, opt_productivity_index[2][0], 3] * sim_result[opt_productivity_index[0][0], :, opt_productivity_index[2][0], 4])
+plt.xlabel("S")
+plt.ylabel("Productivity * Substrate Utilization")
+plt.savefig("plots/optimum/productivity_utility_S.png")
+plt.show()
+
+plt.plot(time_values, sim_result[opt_productivity_index[0][0], opt_productivity_index[1][0], :, 3] * sim_result[opt_productivity_index[0][0], opt_productivity_index[1][0], :, 4])
+plt.xlabel("T")
+plt.ylabel("Productivity * Substrate Utilization")
+plt.savefig("plots/optimum/productivity_utility_T.png")
 plt.show()
